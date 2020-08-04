@@ -1,0 +1,24 @@
+{% extends 'auctions/layout.html' %}
+
+{% block body %}
+<div class="flex-container">
+  <div class="list-item mb-5">
+      <div class="items">
+        <p><span class="field">{{listing.title}}</span><p>
+        <p><span class="field">Category:</span> {{listing.category}}<p>
+        <p><span class="field">Price:</span> ${{listing.start_price}}<p>
+        <p><span class="date">Created {{listing.datetime|date:"M, d, Y, H:i"}}</span></p>
+        <p><span class="field">Listed by:</span> {{listing.owner}}</p>
+      </div>
+  </div>
+  {% if listing.image %}
+  <img src="{{listing.image.url}}" alt="{{ listing.title }}">
+  {% endif %}
+  <p class="description">{{listing.description}}</p>
+</div>
+
+<p class="mt-3">
+  <a class='menu' href="{% url 'index' %}">Back to Active Listings</a>
+</p>
+
+{% endblock %}
