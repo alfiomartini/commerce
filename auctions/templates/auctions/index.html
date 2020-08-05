@@ -6,7 +6,7 @@
      <div class="active-listings mt-4">
          {% for listing in listings %}
          <div class="flex-container">
-            <div class="list-item mb-5">
+            <div class="list-item">
                 <div class="items">
                   <p><a class='menu' href="{% url 'listing' listing.id %}"><span class="field">{{listing.title}}</span></a><p>
                   <p><span class="field">Category:</span> {{listing.category}}<p>

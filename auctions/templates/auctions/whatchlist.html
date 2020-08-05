@@ -1,0 +1,33 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>Current Whatchlist</h2>
+
+     <div class="active-listings mt-4">
+         {% for listing in whatchlist %}
+         <div class="whatchlist">
+            <!-- {% if whatched %}
+            <a class="edit-btn" href="{% url 'whatch_del' listing.id %}">Remove from Whatchlist</a>
+            {% else %}
+            <a class="edit-btn" href="{% url 'whatch_add' listing.id %}">Add to Whatchlist</a>
+            {% endif %} -->
+            <div class="flex-container">
+              <div class="list-item">
+                  <div class="items">
+                    <p><a class='menu' href="{% url 'listing' listing.id %}"><span class="field">{{listing.title}}</span></a><p>
+                    <p><span class="field">Category:</span> {{listing.category}}<p>
+                    <p><span class="field">Price:</span> ${{listing.start_price}}<p>
+                    <p><span class="date">Created {{listing.datetime|date:"M, d, Y, H:i"}}</span></p>
+                  </div>
+              </div>
+              {% if listing.image %}
+              <img src="{{listing.image.url}}" alt="{{ listing.title }}">
+              {% endif %}
+            </div>
+         </div>
+         
+         {% empty %}
+            <h3>Whatchlist is empty so far.</h3>
+         {% endfor %}   
+     </div>
+{% endblock %}

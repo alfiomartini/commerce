@@ -6,7 +6,7 @@ from datetime import datetime
 
 
 class User(AbstractUser):
-    pass
+    whatchlist = models.ManyToManyField('Listing', blank=True, related_name='users')
 
 class Category(models.Model):
     id = models.AutoField(primary_key=True)

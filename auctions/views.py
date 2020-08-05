@@ -3,6 +3,7 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse
+from django.contrib.auth.decorators import login_required
 
 from .models import User, Listing, Category
 
@@ -10,14 +11,53 @@ from .models import User, Listing, Category
 
 def index(request):
     listings = Listing.objects.all()
-    # print(listings)
-    return render(request, "auctions/index.html", {'listings':listings})
+    if request.user.is_authenticated:
+        return render(request, "auctions/index.html", {'listings':listings,
+          'counter':request.user.whatchlist.all().count()})
+    else:
+        return render(request, "auctions/index.html", {'listings':listings})
 
+
+@login_required(login_url='login')
 def list_detail(request, listing_id):
-  listing = Listing.objects.get(id=listing_id)
-  return render(request, "auctions/listing.html", {'listing':listing})
+    listing = Listing.objects.get(id=listing_id)
+    user_id = request.user.id
+    user = User.objects.get(id=user_id)
+    whatchlist = user.whatchlist.all()
+    if listing in whatchlist:
+        whatched = True 
+    else:
+        whatched = False
+    # print(whatchlist)
+    return render(request, "auctions/listing.html", 
+        {'listing':listing, 'whatched':whatched, 
+         'counter':request.user.whatchlist.all().count()})
+
+@login_required(login_url='login')
+def whatchlist_add(request, listing_id):
+    user_id = request.user.id
+    user = User.objects.get(id=user_id)
+    listing = Listing.objects.get(id=listing_id)
+    user.whatchlist.add(listing)
+    return redirect('whatchlist')
+    
+@login_required(login_url='login')
+def whatchlist_del(request, listing_id):
+    user_id = request.user.id
+    user = User.objects.get(id=user_id)
+    listing = Listing.objects.get(id=listing_id)
+    user.whatchlist.remove(listing)
+    return redirect('whatchlist')
+    
 
 
+@login_required(login_url='login')
+def whatchlist(request):
+    user_id = request.user.id
+    user = User.objects.get(id=user_id)
+    whatchlist = user.whatchlist.all()
+    return render(request, 'auctions/whatchlist.html', {'whatchlist':whatchlist, 
+       'counter':request.user.whatchlist.all().count()})
 
 def login_view(request):
     if request.method == "POST":

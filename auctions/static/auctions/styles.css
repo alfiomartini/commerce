@@ -9,6 +9,7 @@ body {
   display: flex;
   flex-direction: row;
   justify-content: center;
+  align-items: center;
   padding: 20px;
   border-bottom: 1px solid black;
 }
@@ -20,10 +21,11 @@ body {
   align-items: center;
 }
 
+
 .flex-container img{
-   width: 20vw;
-   height:300px;
-   padding: 20px;
+  width: 20vw;
+  height:330px;
+  padding: 20px;
 }
 
 .flex-container .description{
@@ -31,11 +33,20 @@ body {
   height:250px;
   text-align: justify;
   padding: 20px;
+  display: flex;
+  align-items: center;
+  flex-direction: row;
 }
+
+
 
 .list-item .items .field{
   font-family: Arial, Helvetica, sans-serif;
   font-weight: bold;
+}
+
+.list-item .items .date{
+  font-variant: small-caps;
 }
 
 .menu{
@@ -55,7 +66,30 @@ body {
   text-decoration: none;
 }
 
-.list-item .items .date{
-  font-variant: small-caps;
+.edit-btn{
+  display: inline-block;
+  text-decoration: none;
+  color: whitesmoke;
+  font-size: 16px;
+  background-color: #333333;
+  padding: 4px 12px;
+  border: none;
+  border-radius: 5px;
 }
+
+.edit-btn:hover{
+  background-color: navy;
+  color: whitesmoke;
+  text-decoration: none;
+} 
+
+.whatch-counter{
+  display: inline-block;
+  color: darkslategray;
+  background-color: whitesmoke;
+  padding: 0px 3px;
+  margin-left: 4px;
+  line-height: 1rem;
+}
+
    
