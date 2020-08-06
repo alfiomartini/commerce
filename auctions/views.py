@@ -5,7 +5,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 
-from .models import User, Listing, Category
+from .models import User, Listing, Category, ListingForm, CategoryForm
 
 # Create your views here.
 
@@ -58,6 +58,36 @@ def whatchlist(request):
     whatchlist = user.whatchlist.all()
     return render(request, 'auctions/whatchlist.html', {'whatchlist':whatchlist, 
        'counter':request.user.whatchlist.all().count()})
+
+
+@login_required(login_url='login')
+def create_listing(request):
+    if request.method == 'POST':
+        form = ListingForm(request.POST, request.FILES)
+        if form.is_valid():
+            title = form.cleaned_data['title']
+            # print(title)
+            start_price = form.cleaned_data['start_price']
+            # print(start_price)
+            category = form.cleaned_data['category']
+            # print(category)
+            description = form.cleaned_data['description']
+            # print(description)
+            image = form.cleaned_data['image']
+            # print(image)
+            user_id = request.user.id
+            user = User.objects.get(id=user_id)
+            Listing.objects.create(title=title, start_price=start_price, 
+                category=category, description=description, image=image,
+                owner=user)
+            return redirect('index')
+        else:
+            return render(request, 'auctions/create.html', 
+              {'form':form, 'counter':request.user.whatchlist.all().count()})
+    else:
+        form = ListingForm()
+        return render(request, 'auctions/create.html', 
+        {'form':form, 'counter':request.user.whatchlist.all().count()})
 
 def login_view(request):
     if request.method == "POST":

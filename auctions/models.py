@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from datetime import datetime
+from django.forms import ModelForm
+from django import forms
 
 # Create your models here.
 
@@ -14,6 +16,11 @@ class Category(models.Model):
 
     def __str__(self):
         return self.name
+
+class CategoryForm(ModelForm):
+    class Meta:
+        model = Category
+        fields = ['name']
 
 class Listing(models.Model):
     id = models.AutoField(primary_key=True)
@@ -29,3 +36,18 @@ class Listing(models.Model):
     def __str__(self):
         # return f"{self.title} (Created {self.datetime.strftime('%Y-%m-%d %H:%M')})"
         return f"{self.title} (Created {self.datetime.strftime('%b. %d, %Y, %H:%M')})"
+
+class ListingForm(ModelForm):
+    class Meta:
+        model = Listing
+        fields = ['title', 'category','start_price','description', 'image']
+        # widgets = {'owner': forms.HiddenInput()}
+        # The following works. But I will try django crispy-forms
+        # widgets = {
+        #     'title':forms.TextInput(attrs = {'class': 'form-control'}),
+        #     'category':forms.Select(attrs = {'class': 'form-control'}),
+        #     'start_price':forms.NumberInput(attrs = {'class': 'form-control'}),
+        #     'description':forms.Textarea(attrs = {'class': 'form-control'}),
+        #     'image':forms.ClearableFileInput(attrs = {'class': 'form-control'})
+            
+        # }
