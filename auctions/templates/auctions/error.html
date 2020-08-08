@@ -1,0 +1,13 @@
+{% extends "auctions/layout.html" %}
+
+{% block title %}
+    Error
+{% endblock %}
+
+{% block body %}
+<div class="container error mt-4">
+  <div class="alert alert-primary">
+    {{ message }}
+  </div>
+</div>
+{% endblock %}

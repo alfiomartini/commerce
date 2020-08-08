@@ -5,13 +5,27 @@ body {
   padding:20px;
 }
 
+nav li > a{
+  font-size: 20px;
+}
+
+.signed-in{
+  margin-top: 15px;
+}
 .flex-container{
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
   justify-content: center;
   align-items: center;
   padding: 20px;
   border-bottom: 1px solid black;
+}
+
+@media screen and (max-size:768px){
+  .flex-container{
+    display: block;
+  }
 }
 
 .flex-container .list-item{
@@ -23,13 +37,13 @@ body {
 
 
 .flex-container img{
-  width: 20vw;
+  width: 400px;
   height:380px;
   padding: 20px;
 }
 
 .flex-container .description{
-  width: 25vw;
+  width: 500px;
   height:250px;
   text-align: justify;
   padding: 20px;
@@ -40,11 +54,14 @@ body {
 
 
 
-.list-item .items .field{
+span.field{
   font-family: Arial, Helvetica, sans-serif;
   font-weight: bold;
 }
 
+.list-item .items {
+  font-size: 1.3rem;
+}
 .list-item .items .date{
   font-variant: small-caps;
 }
@@ -92,9 +109,20 @@ body {
   line-height: 1rem;
 }
 
-#create-form label{
+form label{
   font-family: Arial, Helvetica, sans-serif;
   font-weight: bold;
 }
 
+
+.comments-container{
+  width: 80%;
+  margin: 20px auto;
+  text-align: justify;
+}
+
+.comments-container,
+.description{
+  font-size: 1.2rem;
+}
    

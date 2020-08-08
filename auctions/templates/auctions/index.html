@@ -11,6 +11,7 @@
                   <p><a class='menu' href="{% url 'listing' listing.id %}"><span class="field">{{listing.title}}</span></a><p>
                   <p><span class="field">Category:</span> {{listing.category}}<p>
                   <p><span class="field">Price:</span> ${{listing.start_price}}<p>
+                  <p><span class="field">Comments:</span> {{listing.num_comments}}<p>
                   <p><span class="date">Created {{listing.datetime|date:"M, d, Y, H:i"}}</span></p>
                 </div>
             </div>

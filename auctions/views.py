@@ -5,12 +5,17 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 
-from .models import User, Listing, Category, ListingForm, CategoryForm
+from .models import User, Listing, Category, ListingForm
+from .models import  CategoryForm, CommentForm, BidForm
+from .models import Comment, Bid
 
 # Create your views here.
 
 def index(request):
     listings = Listing.objects.all()
+    # for listing in listings:
+    #     for comment in listing.comments():
+    #         print(comment.comment)
     if request.user.is_authenticated:
         return render(request, "auctions/index.html", {'listings':listings,
           'counter':request.user.whatchlist.all().count()})
@@ -22,8 +27,15 @@ def index(request):
 def list_detail(request, listing_id):
     listing = Listing.objects.get(id=listing_id)
     user_id = request.user.id
+    username = request.user.username
     user = User.objects.get(id=user_id)
     whatchlist = user.whatchlist.all()
+    if username not in listing.users_in_comments():
+        can_comment = True
+        # print(f"{username} can comment")
+    else:
+        can_comment = False
+        # print(f"{username} cannot comment")
     if listing in whatchlist:
         whatched = True 
     else:
@@ -31,7 +43,9 @@ def list_detail(request, listing_id):
     # print(whatchlist)
     return render(request, "auctions/listing.html", 
         {'listing':listing, 'whatched':whatched, 
-         'counter':request.user.whatchlist.all().count()})
+         'counter':request.user.whatchlist.all().count(),
+         'can_comment': can_comment,
+         'form':CommentForm()})
 
 @login_required(login_url='login')
 def whatchlist_add(request, listing_id):
@@ -88,6 +102,22 @@ def create_listing(request):
         form = ListingForm()
         return render(request, 'auctions/create.html', 
         {'form':form, 'counter':request.user.whatchlist.all().count()})
+
+@login_required(login_url='login')
+def add_comment(request, listing_id):
+    if request.method == 'POST':
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            user_id = request.user.id
+            user = User.objects.get(id=user_id)
+            comment = form.cleaned_data['comment']
+            listing = Listing.objects.get(id=listing_id)
+            Comment.objects.create(comment=comment, to_listing=listing, by_user=user)
+            return redirect('index')
+        else:
+          return redirect('listing', listing_id=listing_id)
+    else:
+        return redirect('listing', listing_id=listing_id)        
 
 def login_view(request):
     if request.method == "POST":
