@@ -125,4 +125,18 @@ form label{
 .description{
   font-size: 1.2rem;
 }
+
+.hide-comment{
+  display: None;
+}
+
+.show-comment{
+  display: block;
+}
+
+.bids-message p{
+  font-variant: small-caps;
+  /* font-weight: bold; */
+  font-size: 1.2rem;
+}
    

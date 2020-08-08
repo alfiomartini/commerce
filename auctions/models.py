@@ -35,6 +35,7 @@ class Listing(models.Model):
     datetime = models.DateTimeField(auto_now_add=True)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_listings" ) # username
     image = models.ImageField(upload_to='images/', blank=True, null=True)
+    closed = models.BooleanField(default=False)
 
     def __str__(self):
         # return f"{self.title} (Created {self.datetime.strftime('%Y-%m-%d %H:%M')})"
@@ -77,7 +78,7 @@ class Bid(models.Model):
          related_name="listing_bids", blank=True, null=True)
 
     def __str__(self):
-        return f"Bid = ${self.bid}"
+        return f"({self.id}) Bid = ${self.bid} by {self.bidder} to {self.to_listing}"
 
 
 class BidForm(ModelForm):

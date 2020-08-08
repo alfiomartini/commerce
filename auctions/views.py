@@ -26,6 +26,14 @@ def index(request):
 @login_required(login_url='login')
 def list_detail(request, listing_id):
     listing = Listing.objects.get(id=listing_id)
+    bids = listing.listing_bids.all()
+    # bids = list(listing.listing_bids.all().order_by('-bid'))
+    bids_list = list(bids.order_by('-bid'))
+    num_bids = bids.count()
+    if bids_list:
+        highest_bid = bids_list[0].bid
+    else:
+        highest_bid = 0
     user_id = request.user.id
     username = request.user.username
     user = User.objects.get(id=user_id)
@@ -45,7 +53,11 @@ def list_detail(request, listing_id):
         {'listing':listing, 'whatched':whatched, 
          'counter':request.user.whatchlist.all().count(),
          'can_comment': can_comment,
-         'form':CommentForm()})
+         'form':CommentForm(),
+         'bid_form': BidForm(),
+         'highest_bid':highest_bid,
+         'num_bids':num_bids,
+         'highest_bidder': bids_list[0].bidder.username})
 
 @login_required(login_url='login')
 def whatchlist_add(request, listing_id):
@@ -101,7 +113,8 @@ def create_listing(request):
     else:
         form = ListingForm()
         return render(request, 'auctions/create.html', 
-        {'form':form, 'counter':request.user.whatchlist.all().count()})
+        {'form':form,
+        'counter':request.user.whatchlist.all().count()})
 
 @login_required(login_url='login')
 def add_comment(request, listing_id):
@@ -119,9 +132,38 @@ def add_comment(request, listing_id):
     else:
         return redirect('listing', listing_id=listing_id)        
 
+@login_required(login_url='login')
+def place_bid(request, listing_id):
+    if request.method == 'POST':
+        form = BidForm(request.POST)
+        if form.is_valid():
+            listing = Listing.objects.get(id = listing_id)
+            start_price = listing.start_price
+            # bids here are full objects
+            bids = list(listing.listing_bids.all().order_by('-bid'))
+            if bids:
+                highest_bid = bids[0].bid
+            else:
+                highest_bid = 0
+            placed_bid = form.cleaned_data['bid']
+            if placed_bid < start_price:
+                message = f'Placed bid is smaller than start price (${start_price})'
+                return render(request, 'auctions/error.html', {'message':message})
+            if placed_bid <= highest_bid:
+                message = f'Placed bid must be bigger than current bid (${highest_bid})'
+                return render(request, 'auctions/error.html', {'message':message})
+            # update bid object
+            user_id = request.user.id
+            user = User.objects.get(id=user_id)
+            bid_obj = Bid.objects.get(to_listing=listing.id, bidder=user)
+            bid_obj.bid = placed_bid
+            bid_obj.save()
+            return redirect('listing', listing_id = listing_id) 
+        else:
+            return redirect('listing', listing_id=listing_id)
+
 def login_view(request):
     if request.method == "POST":
-
         # Attempt to sign user in
         username = request.POST["username"]
         password = request.POST["password"]
