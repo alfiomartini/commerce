@@ -13,9 +13,6 @@ from .models import Comment, Bid
 
 def index(request):
     listings = Listing.objects.all()
-    # for listing in listings:
-    #     for comment in listing.comments():
-    #         print(comment.comment)
     if request.user.is_authenticated:
         return render(request, "auctions/index.html", {'listings':listings,
           'counter':request.user.whatchlist.all().count()})
@@ -25,30 +22,42 @@ def index(request):
 
 @login_required(login_url='login')
 def list_detail(request, listing_id):
-    listing = Listing.objects.get(id=listing_id)
-    bids = listing.listing_bids.all()
-    # bids = list(listing.listing_bids.all().order_by('-bid'))
-    bids_list = list(bids.order_by('-bid'))
-    num_bids = bids.count()
-    if bids_list:
-        highest_bid = bids_list[0].bid
-    else:
-        highest_bid = 0
     user_id = request.user.id
     username = request.user.username
     user = User.objects.get(id=user_id)
+    listing = Listing.objects.get(id=listing_id)
+    if user == listing.owner:
+        can_close = True
+    else:
+        can_close = False
+    closed = listing.closed
+    if closed:
+        closed_message = listing.closed_message
+    else:
+        closed_message = None
+
+    bids = listing.listing_bids.all()
+    bids_list = list(bids.order_by('-bid'))
+    num_bids = bids.count()
+
+    if num_bids > 0 :
+        highest_bid = bids_list[0].bid
+        highest_bidder = bids_list[0].bidder.username
+    else:
+        highest_bid = 0
+        highest_bidder = None
+    
+    can_place_bid = request.user != listing.owner
+
     whatchlist = user.whatchlist.all()
     if username not in listing.users_in_comments():
         can_comment = True
-        # print(f"{username} can comment")
     else:
         can_comment = False
-        # print(f"{username} cannot comment")
     if listing in whatchlist:
         whatched = True 
     else:
         whatched = False
-    # print(whatchlist)
     return render(request, "auctions/listing.html", 
         {'listing':listing, 'whatched':whatched, 
          'counter':request.user.whatchlist.all().count(),
@@ -57,7 +66,11 @@ def list_detail(request, listing_id):
          'bid_form': BidForm(),
          'highest_bid':highest_bid,
          'num_bids':num_bids,
-         'highest_bidder': bids_list[0].bidder.username})
+         'highest_bidder': highest_bidder,
+         'closed':closed,
+         'can_close': can_close,
+         'closed_message': closed_message,
+         'can_place_bid': can_place_bid})
 
 @login_required(login_url='login')
 def whatchlist_add(request, listing_id):
@@ -92,15 +105,10 @@ def create_listing(request):
         form = ListingForm(request.POST, request.FILES)
         if form.is_valid():
             title = form.cleaned_data['title']
-            # print(title)
             start_price = form.cleaned_data['start_price']
-            # print(start_price)
             category = form.cleaned_data['category']
-            # print(category)
             description = form.cleaned_data['description']
-            # print(description)
             image = form.cleaned_data['image']
-            # print(image)
             user_id = request.user.id
             user = User.objects.get(id=user_id)
             Listing.objects.create(title=title, start_price=start_price, 
@@ -157,10 +165,46 @@ def place_bid(request, listing_id):
             user = User.objects.get(id=user_id)
             bid_obj = Bid.objects.get(to_listing=listing.id, bidder=user)
             bid_obj.bid = placed_bid
+            # update current user bid as the highest bid
             bid_obj.save()
             return redirect('listing', listing_id = listing_id) 
         else:
             return redirect('listing', listing_id=listing_id)
+
+@login_required(login_url='login')
+def close_auction(request, listing_id):
+    listing = Listing.objects.get(id=listing_id)
+    closed = True
+    listing.closed = closed
+    
+    bids = listing.listing_bids.all()
+    bids_list = list(bids.order_by('-bid'))
+    num_bids = bids.count()
+
+    if num_bids > 0 :
+        highest_bid = bids_list[0].bid
+        highest_bidder = bids_list[0].bidder
+        winner = highest_bidder
+    else:
+        highest_bid = 0
+        highest_bidder = None
+        winner = None 
+    if num_bids > 0 and request.user == winner:
+        closed_message = f'You are the winner of this auction with a bid of ${highest_bid}'
+    if num_bids > 0 and request.user != winner:
+        closed_message = f"This auction was won by {highest_bidder.username} with a bid of ${highest_bid}"
+    if num_bids == 0:
+        closed_message: 'Auction closed by owner without any bids being placed'
+
+    listing.closed_message = closed_message
+    listing.save()
+
+    return render(request, 'auctions/listing.html', {
+        'closed': closed,
+        'closed_message': closed_message,
+        'listing':listing
+    })
+
 
 def login_view(request):
     if request.method == "POST":

@@ -5,10 +5,17 @@
 {% load crispy_forms_tags %}
 
 {% block body %}
-{% if whatched %}
-  <a class="edit-btn" href="{% url 'whatch_del' listing.id %}">Remove from Whatchlist</a>
+{% if not closed %}
+  {% if whatched %}
+    <a class="edit-btn" href="{% url 'whatch_del' listing.id %}">Remove from Whatchlist</a>
+  {% else %}
+    <a class="edit-btn" href="{% url 'whatch_add' listing.id %}">Add to Whatchlist</a>
+  {% endif %}
 {% else %}
-  <a class="edit-btn" href="{% url 'whatch_add' listing.id %}">Add to Whatchlist</a>
+    <a class="edit-btn" href="{% url 'index' %}">This auction is closed</a>
+{% endif %}
+{% if not closed and can_close %}
+  <a class="edit-btn" href="{% url 'close_auction' listing.id %}">Close Auction</a>
 {% endif %}
 <div class="active-listings mt-4">
   <div class="flex-container">
@@ -19,6 +26,9 @@
           <p><span class="field">Price:</span> ${{listing.start_price}}<p>
           <p><span class="date">Created {{listing.datetime|date:"M, d, Y, H:i"}}</span></p>
           <p><span class="field">Listed by:</span> {{listing.owner}}</p>
+          {% if closed %}
+          <p><span class="field">{{closed_message}}</span></p>
+          {% endif %}
         </div>
     </div>
     {% if listing.image %}
@@ -28,33 +38,42 @@
       <div>{{listing.description}}</div>
     </div>
   </div> <!-- flex-container-->
-  <div class="listing-bid">
-    <!-- <div>
-      <input class="edit-btn mt-4 mb-4" type="button" value="Place a bid" id="bid-btn">
-    </div> -->
-    <div class="bids-message">
-      <p>{{num_bids}} bids so far. Highest bid of ${{highest_bid}} by {{highest_bidder}}</p>
+  {% if not closed%}
+    <div class="listing-bid">
+      <div class="bids-message">
+        {% if num_bids > 0 %}
+          <p>{{num_bids}} bids so far. Highest bid of ${{highest_bid}} by {{highest_bidder}}</p>
+        {% else %}
+          <p>No bids placed so far.</p>
+        {% endif %}
+      </div>
+      {% if can_place_bid %}
+        <form action="{% url 'place_bid' listing.id %}" method="post" 
+            id="bid-form" class=''>
+            {% csrf_token %}
+            {{bid_form|crispy}}
+          <input class="btn btn-primary" type="submit" value="Submit">
+        </form>
+      {% endif %}
     </div>
-    <form action="{% url 'place_bid' listing.id %}" method="post" 
-        id="bid-form" class=''>
-        {% csrf_token %}
-        {{bid_form|crispy}}
-      <input class="btn btn-primary" type="submit" value="Submit">
-    </form>
-  </div>
-  <div class="listing-form">
-    {% if can_comment %}
-    <div>
-      <input class="edit-btn mt-4 mb-4" type="button" value="Add a Comment" id="comment-btn">
+    <div class="listing-form">
+      {% if can_comment %}
+      <div>
+        <input class="edit-btn mt-4 mb-4" type="button" value="Add a Comment" id="comment-btn">
+      </div>
+      <form action="{% url 'add_comment' listing.id %}" method="post" 
+          id="comment-form" class='hide-comment'>
+          {% csrf_token %}
+          {{form|crispy}}
+        <input class="btn btn-primary" type="submit" value="Submit">
+      </form>
+      {% else %}
+        <div class="hide-comment">
+          <input class="edit-btn mt-4 mb-4" type="button" value="Add a Comment" id="comment-btn">
+        </div>
+      {% endif %}
     </div>
-    <form action="{% url 'add_comment' listing.id %}" method="post" 
-        id="comment-form" class='hide-comment'>
-        {% csrf_token %}
-        {{form|crispy}}
-      <input class="btn btn-primary" type="submit" value="Submit">
-    </form>
-    {% endif %}
-  </div>
+  {% endif %}
   <div class="comments-container">
     {% for comment in listing.comments %}
       <p><span class="field">Comment ({{comment.by_user}}):</span> {{comment.comment}}</p>

@@ -36,6 +36,7 @@ class Listing(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_listings" ) # username
     image = models.ImageField(upload_to='images/', blank=True, null=True)
     closed = models.BooleanField(default=False)
+    closed_message = models.CharField(max_length=64, blank=True, null=True)
 
     def __str__(self):
         # return f"{self.title} (Created {self.datetime.strftime('%Y-%m-%d %H:%M')})"
