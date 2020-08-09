@@ -199,12 +199,14 @@ def close_auction(request, listing_id):
     listing.closed_message = closed_message
     listing.save()
 
-    return render(request, 'auctions/listing.html', {
-        'closed': closed,
-        'closed_message': closed_message,
-        'listing':listing
-    })
+    return redirect('listing', listing_id=listing_id)
 
+
+def categories(request):
+    pass 
+
+def cat_list(request, category_id):
+    pass 
 
 def login_view(request):
     if request.method == "POST":

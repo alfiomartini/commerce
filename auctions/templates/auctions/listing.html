@@ -5,13 +5,13 @@
 {% load crispy_forms_tags %}
 
 {% block body %}
-{% if not closed %}
-  {% if whatched %}
-    <a class="edit-btn" href="{% url 'whatch_del' listing.id %}">Remove from Whatchlist</a>
-  {% else %}
-    <a class="edit-btn" href="{% url 'whatch_add' listing.id %}">Add to Whatchlist</a>
-  {% endif %}
+
+{% if whatched %}
+  <a class="edit-btn" href="{% url 'whatch_del' listing.id %}">Remove from Whatchlist</a>
 {% else %}
+  <a class="edit-btn" href="{% url 'whatch_add' listing.id %}">Add to Whatchlist</a>
+{% endif %}
+{% if closed %}
     <a class="edit-btn" href="{% url 'index' %}">This auction is closed</a>
 {% endif %}
 {% if not closed and can_close %}
