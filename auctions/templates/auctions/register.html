@@ -2,7 +2,7 @@
 
 {% block body %}
 
-    <h2 class="mb-3">Register</h2>
+    <h2 class="page-heading">Register</h2>
 
     {% if message %}
         <div class="mb-3 alert alert-primary">{{ message }}</div>
@@ -31,7 +31,7 @@
         <input class="btn btn-primary" type="submit" value="Register">
     </form>
     <p class="mt-3">
-      Already have an account? <a  class='menu' href="{% url 'login' %}">Log In here.</a>
+      <a  class='menu' href="{% url 'login' %}"> Already have an account? Log In here.</a>
     </p>
 
 {% endblock %}

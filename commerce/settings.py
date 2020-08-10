@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'crispy_forms',
+    'crispy_forms', # to diplay nice forma using bootstrap (see below)
 ]
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
@@ -82,6 +82,9 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
+
+# Fundamental settings to work with images. Image files are 
+# saved under the /media directory
 
 AUTH_USER_MODEL = 'auctions.User'
 MEDIA_URL = '/media/'

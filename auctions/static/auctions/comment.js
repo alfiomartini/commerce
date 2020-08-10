@@ -4,8 +4,9 @@ function listeners(){
    
   let form = document.getElementById('comment-form');
   let button = document.getElementById('comment-btn');
-   
-  button.addEventListener('click', displayComment);
+  
+  if (button)
+    button.addEventListener('click', displayComment);
    
   function displayComment(){
      if (form.classList.contains('hide-comment')){
