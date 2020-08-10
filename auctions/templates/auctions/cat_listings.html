@@ -1,7 +1,7 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-    <h2>Active Listings</h2>
+    <h2>Listings in category {{category.name}}</h2>
 
      <div class="active-listings mt-4">
          {% for listing in listings %}
@@ -21,7 +21,7 @@
             {% endif %}
          </div>
          {% empty %}
-            <h3>No listings were created so far</h3>
+            <h3>No listings in this category so far</h3>
          {% endfor %}   
      </div>
 {% endblock %}

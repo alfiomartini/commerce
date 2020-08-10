@@ -203,10 +203,17 @@ def close_auction(request, listing_id):
 
 
 def categories(request):
-    pass 
+    categories = Category.objects.all()
+    return render(request, 'auctions/categories.html', {'categories':categories,
+      'counter':request.user.whatchlist.all().count()})
 
-def cat_list(request, category_id):
-    pass 
+def category_listings(request, category_id):
+    print('Hello Category Listings')
+    category = Category.objects.get(id=category_id)
+    listings = category.cat_listings.all()
+    return render(request, 'auctions/cat_listings.html', {'category':category,
+       'listings':listings})
+
 
 def login_view(request):
     if request.method == "POST":

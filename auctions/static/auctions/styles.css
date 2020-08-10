@@ -67,14 +67,16 @@ span.field{
 }
 
 .menu{
-  display: inline-block;
-  padding:4px 12px;
-  width: 100%;
-  margin:5px 0;
+  display: block;
+  padding:10px 0;
+  width: 50%;
+  margin: 10px auto;
+  text-align: center;
   text-decoration: none;
   color: whitesmoke;
   background-color: darkslategray;
   border-radius: 5px;
+  font-size: 18px;
 }
 
 .menu:hover{
@@ -106,7 +108,7 @@ span.field{
   background-color: whitesmoke;
   padding: 0px 3px;
   margin-left: 4px;
-  line-height: 1rem;
+  line-height: 1.3rem;
 }
 
 form label{
@@ -140,3 +142,8 @@ form label{
   font-size: 1.2rem;
 }
    
+.categories-heading{
+    text-align: center;
+    font-family: Arial, Helvetica, sans-serif;
+    margin: 40px 0;
+}
