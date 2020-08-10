@@ -1,7 +1,7 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-    <h2>Listings in category {{category.name}}</h2>
+    <h2 class="page-heading">Listings in category {{category.name}}</h2>
 
      <div class="active-listings mt-4">
          {% for listing in listings %}
