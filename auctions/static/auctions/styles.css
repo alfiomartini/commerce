@@ -9,6 +9,14 @@ nav li > a{
   font-size: 18px;
 }
 
+.navbar .dropdown-menu{
+  background-color: darkslategray !important ;
+}
+
+.navbar .dropdown-menu a:hover{
+  color: black !important;
+  background-color: whitesmoke !important;
+}
 .signed-in{
   margin-top: 15px;
 }

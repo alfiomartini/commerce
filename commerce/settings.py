@@ -40,6 +40,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'crispy_forms', # to diplay nice forma using bootstrap (see below)
 ]
+
+# https://simpleisbetterthancomplex.com/tutorial/2018/11/28/advanced-form-rendering-with-django-crispy-forms.html
+
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 MIDDLEWARE = [
@@ -83,10 +86,15 @@ DATABASES = {
     }
 }
 
-# Fundamental settings to work with images. Image files are 
-# saved under the /media directory
+# needef for extending User model in auctions/models.py
+# see: https://simpleisbetterthancomplex.com/tutorial/2016/07/22/how-to-extend-django-user-model.html#abstractbaseuser
 
 AUTH_USER_MODEL = 'auctions.User'
+
+# Fundamental settings to work with images. Image files are 
+# saved under the /media directory
+# see: https://overiq.com/django-1-10/handling-media-files-in-django/
+
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
