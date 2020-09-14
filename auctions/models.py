@@ -4,8 +4,7 @@ from datetime import datetime
 from django.forms import ModelForm
 from django import forms
 
-# Create your models here.
-
+# Models here.
 
 class User(AbstractUser):
     whatchlist = models.ManyToManyField('Listing', blank=True, related_name='users')
@@ -20,10 +19,6 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
-class CategoryForm(ModelForm):
-    class Meta:
-        model = Category
-        fields = ['name']
 
 class Listing(models.Model):
     id = models.AutoField(primary_key=True)
@@ -39,7 +34,6 @@ class Listing(models.Model):
     closed_message = models.CharField(max_length=64, blank=True, null=True)
 
     def __str__(self):
-        # return f"{self.title} (Created {self.datetime.strftime('%Y-%m-%d %H:%M')})"
         return f"{self.title} (Created {self.datetime.strftime('%b. %d, %Y, %H:%M')})"
 
     def num_comments(self):
@@ -56,20 +50,8 @@ class Listing(models.Model):
             user_list.append(comment.by_user.username)
         return user_list
 
-class ListingForm(ModelForm):
-    class Meta:
-        model = Listing
-        fields = ['title', 'category','start_price','description', 'image']
-        # widgets = {'owner': forms.HiddenInput()}
-        # The following works. But I will try django crispy-forms
-        # widgets = {
-        #     'title':forms.TextInput(attrs = {'class': 'form-control'}),
-        #     'category':forms.Select(attrs = {'class': 'form-control'}),
-        #     'start_price':forms.NumberInput(attrs = {'class': 'form-control'}),
-        #     'description':forms.Textarea(attrs = {'class': 'form-control'}),
-        #     'image':forms.ClearableFileInput(attrs = {'class': 'form-control'})
-            
-        # }
+    def num_bids(self):
+        return self.listing_bids.all().count()
 
 class Bid(models.Model):
     id = models.AutoField(primary_key=True)
@@ -81,13 +63,6 @@ class Bid(models.Model):
     def __str__(self):
         return f"({self.id}) Bid = ${self.bid} by {self.bidder} to {self.to_listing}"
 
-
-class BidForm(ModelForm):
-    class Meta:
-        model = Bid
-        fields = ['bid']
-
-
 class Comment(models.Model):
     id = models.AutoField(primary_key=True)
     comment = models.TextField(max_length=1000)
@@ -95,10 +70,28 @@ class Comment(models.Model):
     to_listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name="listing_comments" )
 
     def __str__(self):
-        list = [self.comment, self.to_listing.title, 'by ' + self.by_user.username]
-        string = "\n".join(list)
-        return string
+        comment = self.comment + ' to ' + self.to_listing.title +  ' by ' + self.by_user.username
+        return comment
        
+
+# Forms from models here
+
+class CategoryForm(ModelForm):
+    class Meta:
+        model = Category
+        fields = ['name']
+
+
+class ListingForm(ModelForm):
+    class Meta:
+        model = Listing
+        fields = ['title', 'category','start_price','description', 'image']
+
+class BidForm(ModelForm):
+    class Meta:
+        model = Bid
+        fields = ['bid']
+
 
 class CommentForm(ModelForm):
     class Meta:

@@ -77,6 +77,14 @@ def list_detail(request, listing_id):
          'can_place_bid': can_place_bid})
 
 @login_required(login_url='login')
+def whatchlist(request):
+    user_id = request.user.id
+    user = User.objects.get(id=user_id)
+    whatchlist = user.whatchlist.all()
+    return render(request, 'auctions/whatchlist.html', {'whatchlist':whatchlist, 
+       'counter':request.user.whatchlist.all().count()})
+
+@login_required(login_url='login')
 def whatchlist_add(request, listing_id):
     user_id = request.user.id
     user = User.objects.get(id=user_id)
@@ -92,16 +100,6 @@ def whatchlist_del(request, listing_id):
     user.whatchlist.remove(listing)
     return redirect('whatchlist')
     
-
-
-@login_required(login_url='login')
-def whatchlist(request):
-    user_id = request.user.id
-    user = User.objects.get(id=user_id)
-    whatchlist = user.whatchlist.all()
-    return render(request, 'auctions/whatchlist.html', {'whatchlist':whatchlist, 
-       'counter':request.user.whatchlist.all().count()})
-
 
 @login_required(login_url='login')
 def create_listing(request):
@@ -167,10 +165,17 @@ def place_bid(request, listing_id):
             # update bid object
             user_id = request.user.id
             user = User.objects.get(id=user_id)
-            bid_obj = Bid.objects.get(to_listing=listing.id, bidder=user)
-            bid_obj.bid = placed_bid
-            # update current user bid as the highest bid
-            bid_obj.save()
+            print('before accessing Bid.objects')
+            try:
+                bid_obj = Bid.objects.get(to_listing=listing, bidder=user)
+            except Bid.DoesNotExist:
+                # new bid
+                Bid.objects.create(bid=placed_bid, bidder=user, to_listing=listing)
+            else: # udpate bid
+                bid_obj.bid = placed_bid
+                bid_obj.bidder = user
+                # update current user bid as the highest bid
+                bid_obj.save()
             return redirect('listing', listing_id = listing_id) 
         else:
             return redirect('listing', listing_id=listing_id)
@@ -212,7 +217,7 @@ def categories(request):
       'counter':request.user.whatchlist.all().count()})
 
 def category_listings(request, category_id):
-    print('Hello Category Listings')
+    # print('Hello Category Listings')
     category = Category.objects.get(id=category_id)
     listings = category.cat_listings.all()
     return render(request, 'auctions/cat_listings.html', {'category':category,

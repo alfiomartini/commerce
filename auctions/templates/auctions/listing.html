@@ -8,7 +8,8 @@
 
 {% if whatched %}
   <a class="edit-btn" href="{% url 'whatch_del' listing.id %}">Remove from Whatchlist</a>
-{% else %}
+{% endif %}
+{% if not whatched and not closed %}
   <a class="edit-btn" href="{% url 'whatch_add' listing.id %}">Add to Whatchlist</a>
 {% endif %}
 {% if closed %}
@@ -23,7 +24,7 @@
         <div class="items">
           <p><span class="field">Listing: {{listing.title}}</span><p>
           <p><span class="field">Category:</span> {{listing.category}}<p>
-          <p><span class="field">Price:</span> ${{listing.start_price}}<p>
+          <p><span class="field">Start Price:</span> ${{listing.start_price}}<p>
           <p><span class="date">Created {{listing.datetime|date:"M, d, Y, H:i"}}</span></p>
           <p><span class="field">Listed by:</span> {{listing.owner}}</p>
           {% if closed %}
