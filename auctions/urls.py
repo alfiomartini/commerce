@@ -15,5 +15,6 @@ urlpatterns = [
     path('place/bid/<int:listing_id>', views.place_bid, name='place_bid'),
     path('close/bid/<int:listing_id>', views.close_auction, name='close_auction'),
     path('categories', views.categories, name = 'categories'),
-    path('category/<int:category_id>', views.category_listings, name='listings_in_cat')
+    path('category/<int:category_id>', views.category_listings, name='listings_in_cat'),
+    path('readme', views.readme, name='readme')
 ]

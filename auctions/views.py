@@ -21,6 +21,10 @@ def index(request):
 
 
 @login_required(login_url='login')
+def readme(request):
+    return render(request, 'auctions/readme.html', {})
+
+@login_required(login_url='login')
 def list_detail(request, listing_id):
     user_id = request.user.id
     username = request.user.username
