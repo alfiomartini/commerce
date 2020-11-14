@@ -23,6 +23,3 @@ urlpatterns = [
          views.category_listings, name='listings_in_cat'),
     path('readme', views.readme, name='readme')
 ]
-
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-# this will help to access your media folder.
