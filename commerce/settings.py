@@ -23,9 +23,11 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = os.environ.get('AUCTION_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# DEBUG = True
+DEBUG = os.environ.get('DJANGO_DEBUG', '') != 'False'
 
-ALLOWED_HOSTS = []
+# https://stackoverflow.com/questions/31685688/is-allowed-hosts-needed-on-heroku
+ALLOWED_HOSTS = ['localhost', ".herokuapp.com"]
 
 
 # Application definition
@@ -38,7 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'crispy_forms', # to diplay nice forma using bootstrap (see below)
+    'crispy_forms',  # to diplay nice forma using bootstrap (see below)
 ]
 
 # https://simpleisbetterthancomplex.com/tutorial/2018/11/28/advanced-form-rendering-with-django-crispy-forms.html
@@ -47,6 +49,7 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -91,7 +94,7 @@ DATABASES = {
 
 AUTH_USER_MODEL = 'auctions.User'
 
-# Fundamental settings to work with images. Image files are 
+# Fundamental settings to work with images. Image files are
 # saved under the /media directory
 # see: https://overiq.com/django-1-10/handling-media-files-in-django/
 
@@ -129,6 +132,10 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
+
+# The absolute path to the directory where collectstatic will collect static files for deployment.
+# run 'python manage.py collectstatic'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static_files')
 
 
 # Static files (CSS, JavaScript, Images)
