@@ -23,8 +23,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = os.environ.get('AUCTION_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG = True
-DEBUG = os.environ.get('DJANGO_DEBUG', '') != 'False'
+DEBUG = True
+# DEBUG = os.environ.get('DJANGO_DEBUG', '') != 'False'
 
 # https://stackoverflow.com/questions/31685688/is-allowed-hosts-needed-on-heroku
 ALLOWED_HOSTS = ['localhost', ".herokuapp.com"]
@@ -98,12 +98,13 @@ AUTH_USER_MODEL = 'auctions.User'
 # saved under the /media directory
 # see: https://overiq.com/django-1-10/handling-media-files-in-django/
 
+
+# for deployment
+# https://www.dothedev.com/blog/heroku-django-store-your-uploaded-media-files-for-free/
+
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-# # For deployment?
-# MEDIA_URL = '/static/'
-# MEDIA_ROOT = os.path.join(BASE_DIR, 'static_files')
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
