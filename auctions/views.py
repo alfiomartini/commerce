@@ -9,16 +9,26 @@ from .models import User, Listing, Category, ListingForm
 from .models import CategoryForm, CommentForm, BidForm
 from .models import Comment, Bid
 
+from django.conf import settings
+
 
 # Create your views here.
+
+if settings.DEBUG:
+    DEBUG_MODE = True
+else:
+    DEBUG_MODE = False
+
 
 def index(request):
     listings = Listing.objects.all()
     if request.user.is_authenticated:
         return render(request, "auctions/index.html", {'listings': listings,
-                                                       'counter': request.user.whatchlist.all().count()})
+                                                       'counter': request.user.whatchlist.all().count(),
+                                                       'debug': DEBUG_MODE})
     else:
-        return render(request, "auctions/index.html", {'listings': listings})
+        return render(request, "auctions/index.html", {'listings': listings,
+                                                       'debug': DEBUG_MODE})
 
 
 @login_required(login_url='login')

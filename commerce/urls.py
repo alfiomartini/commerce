@@ -25,5 +25,6 @@ urlpatterns = [
 
 # we also need to add the MEDIA_URL if settings are in DEBUG mode,
 # otherwise we won't be able to view uploaded images locally.
-# if settings.DEBUG: # new
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+if settings.DEBUG:  # new
+    urlpatterns += static(settings.MEDIA_URL,
+                          document_root=settings.MEDIA_ROOT)

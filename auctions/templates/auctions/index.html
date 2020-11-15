@@ -1,5 +1,7 @@
 {% extends "auctions/layout.html" %}
 
+{% load static %}
+
 {% block body %}
     <h2 class="page-heading">Active Listings</h2>
 
@@ -17,9 +19,13 @@
                       by {{listing.owner}}</span></p>
                 </div>
             </div>
-            {% if listing.image %}
+            <img src="{{listing.image.url}}" alt="{{ listing.title }}">
+            <!-- {% if listing.image and debug %}
             <img src="{{listing.image.url}}" alt="{{ listing.title }}">
             {% endif %}
+            {% if listing.image and not debug %}
+            <img src="/static/{{listing.image}}" alt="{{listing.title}}">
+            {% endif %} -->
          </div>
          {% empty %}
             <h3>No listings were created so far</h3>
