@@ -4,3 +4,4 @@ gunicorn
 whitenoise
 python-dateutil
 dateparser
+pillow
