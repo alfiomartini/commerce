@@ -242,7 +242,8 @@ def category_listings(request, category_id):
     category = Category.objects.get(id=category_id)
     listings = category.cat_listings.all()
     return render(request, 'auctions/cat_listings.html', {'category': category,
-                                                          'listings': listings})
+                                                          'listings': listings,
+                                                          'counter': request.user.whatchlist.all().count(), })
 
 
 def login_view(request):
